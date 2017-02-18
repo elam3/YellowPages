@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -42,7 +42,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         tableView.estimatedRowHeight = 150
         
         searchBar = UISearchBar()
-        //searchBar.delegate = self
+        searchBar.delegate = self
         
         searchBar.sizeToFit()
         navigationItem.titleView = searchBar
@@ -74,6 +74,30 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
          }
          */
         
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        /*self.businesses = searchText.isEmpty ? businesses : businesses?.filter(
+            {(dataString: Business) -> Bool in
+                return dataString.name!.range(of: searchText, options: .caseInsensitive) != nil
+        })
+        */
+        Business.searchWithTerm(term: searchText, completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            self.businesses = businesses
+            
+            self.tableView.reloadData()
+            
+            if let businesses = businesses {
+                for business in businesses {
+                    print(business.name!)
+                    print(business.address!)
+                }
+            }
+            
+        }
+        )
+        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
